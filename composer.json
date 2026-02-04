@@ -1,5 +1,5 @@
 {
-    "name": "ChamikaSamaraweera/payhere-php-sdk",
+    "name": "chamikasamaraweera/payhere-php-sdk",
     "description": "PHP SDK for PayHere Payment Gateway",
     "type": "library",
     "keywords": [
