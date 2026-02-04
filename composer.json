@@ -1,0 +1,35 @@
+{
+    "name": "ChamikaSamaraweera/payhere-php-sdk",
+    "description": "PHP SDK for PayHere Payment Gateway",
+    "type": "library",
+    "keywords": [
+        "payhere",
+        "payment",
+        "gateway",
+        "sdk",
+        "php"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ChamikaSamaraweera",
+            "email": "chamika@teaminfinity.lk"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Payhere\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Payhere\\Tests\\": "tests/"
+        }
+    }
+}
