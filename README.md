@@ -1,8 +1,9 @@
 # PayHere PHP SDK
 
-[![Latest Version](https://img.shields.io/github/v/release/ChamikaSamaraweera/payhere-php-sdk)](https://github.com/ChamikaSamaraweera/payhere-php-sdk/releases)
-[![License](https://img.shields.io/github/license/ChamikaSamaraweera/payhere-php-sdk)](LICENSE)
-[![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-blue)](https://www.php.net/)
+[![Latest Version](https://img.shields.io/packagist/v/chamikasamaraweera/payhere-php-sdk)](https://packagist.org/packages/chamikasamaraweera/payhere-php-sdk)
+[![License](https://img.shields.io/packagist/l/chamikasamaraweera/payhere-php-sdk)](https://github.com/ChamikaSamaraweera/payhere-php-sdk/blob/master/LICENSE)
+[![PHP Version](https://img.shields.io/packagist/php-v/chamikasamaraweera/payhere-php-sdk)](https://packagist.org/packages/chamikasamaraweera/payhere-php-sdk)
+[![Total Downloads](https://img.shields.io/packagist/dt/chamikasamaraweera/payhere-php-sdk)](https://packagist.org/packages/chamikasamaraweera/payhere-php-sdk)
 
 A comprehensive PHP SDK for integrating PayHere Payment Gateway into your PHP applications.
 
