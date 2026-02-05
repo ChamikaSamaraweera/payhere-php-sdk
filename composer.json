@@ -27,10 +27,5 @@
         "psr-4": {
             "Payhere\\": "src/"
         }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Payhere\\Tests\\": "tests/"
-        }
     }
 }
