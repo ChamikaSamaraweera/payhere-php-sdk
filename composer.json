@@ -21,20 +21,11 @@
         "php": ">=7.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0",
-        "captainhook/captainhook": "^5.0"
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "psr-4": {
             "Payhere\\": "src/"
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "./vendor/bin/captainhook install --skip-existing"
-        ],
-        "post-update-cmd": [
-            "./vendor/bin/captainhook install --skip-existing"
-        ]
-    },
+    }
 }

@@ -23,13 +23,15 @@ Enhancement suggestions are welcome! Please create an issue with:
 ### Pull Requests
 
 1. Fork the repository
-2. Create a new branch (`git checkout -b feature/your-feature-name`)
-3. Make your changes
-4. Write or update tests if applicable
-5. Update documentation as needed
-6. Commit your changes using conventional commit format (`git commit -m 'feat: add new feature'`)
-7. Push to the branch (`git push origin feature/your-feature-name`)
-8. Create a Pull Request
+2. Clone your fork (`git clone https://github.com/your-username/payhere-php-sdk.git`)
+3. Run the setup script to install git hooks (`./setup-hooks.sh`)
+4. Create a new branch (`git checkout -b feature/your-feature-name`)
+5. Make your changes
+6. Write or update tests if applicable
+7. Update documentation as needed
+8. Commit your changes using conventional commit format (`git commit -m 'feat: add new feature'`)
+9. Push to the branch (`git push origin feature/your-feature-name`)
+10. Create a Pull Request
 
 ### Commit Message Guidelines
 
