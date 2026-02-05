@@ -1,0 +1,14 @@
+{
+    "commit-msg": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "CaptainHook\\App\\Hook\\Message\\Action\\Regex",
+                "options": {
+                    "regex": "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\\([a-zA-Z0-9_-]+\\))?: [A-Z].*",
+                    "error": "Commit message does not follow conventional commit format.\\n\\nExpected: type(scope): Description\\n\\nValid types: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert\\n\\nExamples:\\n  feat: add new payment method\\n  fix(auth): resolve login issue\\n  docs: update API documentation"
+                }
+            }
+        ]
+    }
+}

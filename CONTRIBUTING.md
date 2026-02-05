@@ -27,17 +27,31 @@ Enhancement suggestions are welcome! Please create an issue with:
 3. Make your changes
 4. Write or update tests if applicable
 5. Update documentation as needed
-6. Commit your changes (`git commit -am 'Add new feature'`)
+6. Commit your changes using conventional commit format (`git commit -m 'feat: add new feature'`)
 7. Push to the branch (`git push origin feature/your-feature-name`)
 8. Create a Pull Request
 
-### Coding Standards
+### Commit Message Guidelines
 
-- Follow PSR-4 autoloading standards
-- Use meaningful variable and function names
-- Add PHPDoc comments for all public methods
-- Keep methods focused and single-purpose
-- Maintain backward compatibility when possible
+This project uses [Conventional Commits](https://conventionalcommits.org/) for commit messages. This helps maintain a clear and structured git history.
+
+**Format:** `type(scope): description`
+
+**Valid types:**
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code refactoring
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks
+
+**Examples:**
+- `feat: add support for recurring payments`
+- `fix(auth): resolve hash verification issue`
+- `docs: update installation instructions`
+
+The commit hooks will validate your commit messages automatically.
 
 ### Testing
 
