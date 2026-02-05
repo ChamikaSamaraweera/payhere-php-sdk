@@ -24,7 +24,7 @@ Enhancement suggestions are welcome! Please create an issue with:
 
 1. Fork the repository
 2. Clone your fork (`git clone https://github.com/your-username/payhere-php-sdk.git`)
-3. Run the setup script to install git hooks (`./setup-hooks.sh`)
+3. Run the setup script to install dependencies and git hooks (`./setup.sh`)
 4. Create a new branch (`git checkout -b feature/your-feature-name`)
 5. Make your changes
 6. Write or update tests if applicable

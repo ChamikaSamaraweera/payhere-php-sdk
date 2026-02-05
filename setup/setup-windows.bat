@@ -34,7 +34,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 echo.
 
-echo [3/4] Running SDK tests...
+echo [3/5] Running SDK tests...
 php test.php
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Tests failed!
@@ -43,7 +43,16 @@ if %ERRORLEVEL% NEQ 0 (
 )
 echo.
 
-echo [4/4] Setup complete!
+echo [4/5] Setting up git hooks...
+setup-hooks.bat
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] Failed to setup git hooks!
+    pause
+    exit /b 1
+)
+echo.
+
+echo [5/5] Setup complete!
 echo.
 echo ========================================
 echo Next Steps:
