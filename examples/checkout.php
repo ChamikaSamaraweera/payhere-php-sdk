@@ -1,48 +1,81 @@
 <?php
 /**
- * PayHere Payment Checkout Example
- * 
- * This example shows how to create a payment request and redirect to PayHere
+ * PayHere Payment Checkout with Exception Handling
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Payhere\Payhere;
+use Payhere\Config;
+use Payhere\Exceptions\InvalidAmountException;
+use Payhere\Exceptions\InvalidCurrencyException;
+use Payhere\Exceptions\InvalidPaymentDataException;
+use Payhere\Exceptions\MissingRequiredFieldException;
+use Payhere\Exceptions\PayhereException;
 
-// Initialize PayHere SDK
-$payhere = new Payhere(
-    'YOUR_MERCHANT_ID',        // Replace with your Merchant ID
-    'YOUR_MERCHANT_SECRET',    // Replace with your Merchant Secret
-    true                       // true = sandbox, false = live
-);
-
-// Create a payment request
-$payment = $payhere->createPaymentRequest()
-    ->setOrderId('ORDER_' . time())
-    ->setAmount(1000.00)
-    ->setCurrency('LKR')
-    ->setItems('Premium Subscription', 1)
-    ->setCustomer(
-        'John',
-        'Doe',
-        'john.doe@example.com',
-        '0771234567',
-        '123 Main Street',
-        'Colombo',
-        'Sri Lanka'
-    )
-    ->setReturnUrl('http://localhost/payhere-sdk/examples/return.php')
-    ->setCancelUrl('http://localhost/payhere-sdk/examples/cancel.php')
-    ->setNotifyUrl('http://localhost/payhere-sdk/examples/notify.php')
-    ->setCustomFields('user_id_123', 'subscription_plan_premium');
-
+try {
+    // Initialize configuration
+    $config = new Config(
+        'YOUR_MERCHANT_ID',
+        'YOUR_MERCHANT_SECRET',
+        true // Sandbox mode
+    );
+    
+    // Initialize PayHere
+    $payhere = new Payhere(
+        $config->getMerchantId(),
+        $config->getMerchantSecret(),
+        $config->isSandbox()
+    );
+    
+    // Create payment request
+    $payment = $payhere->createPaymentRequest()
+        ->setOrderId('ORDER_' . time())
+        ->setAmount(1000.00)
+        ->setCurrency('LKR')
+        ->setItems('Premium Subscription', 1)
+        ->setCustomer(
+            'John',
+            'Doe',
+            'john.doe@example.com',
+            '0771234567',
+            '123 Main Street',
+            'Colombo',
+            'Sri Lanka'
+        )
+        ->setReturnUrl('http://localhost/payhere-sdk/return.php')
+        ->setCancelUrl('http://localhost/payhere-sdk/cancel.php')
+        ->setNotifyUrl('http://localhost/payhere-sdk/notify.php')
+        ->setCustomFields('user_id_123', 'subscription_plan_premium');
+    
+    // Get payment summary
+    $summary = $payment->getSummary();
+    
+} catch (InvalidAmountException $e) {
+    die("Amount Error: " . $e->getMessage());
+    
+} catch (InvalidCurrencyException $e) {
+    die("Currency Error: " . $e->getMessage());
+    
+} catch (InvalidPaymentDataException $e) {
+    die("Payment Data Error: " . $e->getMessage());
+    
+} catch (MissingRequiredFieldException $e) {
+    die("Missing Field: " . $e->getMessage());
+    
+} catch (PayhereException $e) {
+    die("PayHere Error: " . $e->getMessage());
+    
+} catch (Exception $e) {
+    die("Unexpected Error: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PayHere Payment Checkout</title>
+    <title>PayHere Checkout</title>
     <style>
         * {
             margin: 0;
@@ -135,10 +168,6 @@ $payment = $payhere->createPaymentRequest()
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
         }
         
-        form button:active {
-            transform: translateY(0);
-        }
-        
         .secure-badge {
             text-align: center;
             margin-top: 20px;
@@ -159,15 +188,15 @@ $payment = $payhere->createPaymentRequest()
         <div class="order-details">
             <div class="detail-row">
                 <span class="detail-label">Item</span>
-                <span class="detail-value">Premium Subscription</span>
+                <span class="detail-value"><?php echo htmlspecialchars($summary['items']); ?></span>
             </div>
             <div class="detail-row">
                 <span class="detail-label">Order ID</span>
-                <span class="detail-value"><?php echo htmlspecialchars($payment->getData()['order_id']); ?></span>
+                <span class="detail-value"><?php echo htmlspecialchars($summary['order_id']); ?></span>
             </div>
             <div class="detail-row">
                 <span class="detail-label">Amount</span>
-                <span class="detail-value amount">LKR 1,000.00</span>
+                <span class="detail-value amount"><?php echo htmlspecialchars($summary['currency'] . ' ' . number_format($summary['amount'], 2)); ?></span>
             </div>
         </div>
         

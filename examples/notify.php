@@ -1,128 +1,124 @@
 <?php
 /**
- * PayHere Payment Notification Handler
- * 
- * This endpoint receives server-to-server notifications from PayHere
- * about payment status updates
+ * PayHere Payment Notification Handler with Exception Handling
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Payhere\Payhere;
+use Payhere\Config;
+use Payhere\NotificationHandler;
+use Payhere\Exceptions\NotificationVerificationException;
+use Payhere\Exceptions\MissingRequiredFieldException;
+use Payhere\Exceptions\PayhereException;
 
-// Initialize PayHere SDK
-$payhere = new Payhere(
-    'YOUR_MERCHANT_ID',        // Replace with your Merchant ID
-    'YOUR_MERCHANT_SECRET',    // Replace with your Merchant Secret
-    true                       // true = sandbox, false = live
-);
+// Set response header
+header('Content-Type: text/plain');
 
-// Handle the notification
-$notification = $payhere->handleNotification();
-
-// Log the notification (for debugging)
-file_put_contents(
-    __DIR__ . '/notifications.log',
-    date('Y-m-d H:i:s') . " - " . json_encode($_POST) . "\n",
-    FILE_APPEND
-);
-
-// Verify the notification hash
-if (!$notification->verify()) {
+try {
+    // Initialize configuration
+    $config = new Config(
+        'YOUR_MERCHANT_ID',
+        'YOUR_MERCHANT_SECRET',
+        true // Sandbox mode
+    );
+    
+    // Create notification handler
+    $notification = new NotificationHandler($config);
+    
+    // Log incoming notification
+    $notification->log(__DIR__ . '/notifications.log');
+    
+    // Verify the notification
+    if ($notification->verify()) {
+        
+        // Get payment details
+        $orderId = $notification->getOrderId();
+        $paymentId = $notification->getPaymentId();
+        $amount = $notification->getAmount();
+        $currency = $notification->getCurrency();
+        
+        // Handle different payment statuses
+        if ($notification->isSuccess()) {
+            // Payment successful
+            // TODO: Update database
+            // TODO: Mark order as paid
+            // TODO: Send confirmation email
+            // TODO: Activate subscription
+            
+            error_log("SUCCESS: Order {$orderId}, Payment {$paymentId}, Amount {$amount} {$currency}");
+            
+            echo "SUCCESS";
+            http_response_code(200);
+            
+        } elseif ($notification->isPending()) {
+            // Payment pending
+            error_log("PENDING: Order {$orderId}");
+            
+            echo "PENDING";
+            http_response_code(200);
+            
+        } elseif ($notification->isCanceled()) {
+            // Payment canceled
+            error_log("CANCELED: Order {$orderId}");
+            
+            echo "CANCELED";
+            http_response_code(200);
+            
+        } elseif ($notification->isFailed()) {
+            // Payment failed
+            error_log("FAILED: Order {$orderId}");
+            
+            echo "FAILED";
+            http_response_code(200);
+            
+        } elseif ($notification->isChargedBack()) {
+            // Payment charged back
+            error_log("CHARGEDBACK: Order {$orderId}, Payment {$paymentId}");
+            
+            echo "CHARGEDBACK";
+            http_response_code(200);
+            
+        } else {
+            // Unknown status
+            error_log("UNKNOWN STATUS: Order {$orderId}, Status: {$notification->getStatusCode()}");
+            
+            echo "UNKNOWN";
+            http_response_code(200);
+        }
+    }
+    
+} catch (NotificationVerificationException $e) {
+    // Hash verification failed - possible tampering
+    http_response_code(403);
+    echo "VERIFICATION_FAILED";
+    
+    error_log("VERIFICATION FAILED: " . $e->getMessage());
+    error_log("Context: " . json_encode($e->getContext()));
+    
+} catch (MissingRequiredFieldException $e) {
+    // Missing required fields in notification
     http_response_code(400);
-    die('Invalid notification signature');
+    echo "MISSING_FIELDS";
+    
+    error_log("MISSING FIELD: " . $e->getMessage());
+    error_log("Field: " . json_encode($e->getContext()));
+    
+} catch (PayhereException $e) {
+    // Other PayHere exception
+    http_response_code(500);
+    echo "ERROR";
+    
+    error_log("PayHere Exception: " . $e->getMessage());
+    if ($e->getContext()) {
+        error_log("Context: " . json_encode($e->getContext()));
+    }
+    
+} catch (Exception $e) {
+    // Unexpected error
+    http_response_code(500);
+    echo "INTERNAL_ERROR";
+    
+    error_log("Unexpected error: " . $e->getMessage());
+    error_log("Trace: " . $e->getTraceAsString());
 }
-
-// Get payment details
-$orderId = $notification->getOrderId();
-$paymentId = $notification->getPaymentId();
-$amount = $notification->getAmount();
-$currency = $notification->getCurrency();
-$statusCode = $notification->getStatusCode();
-$statusText = $notification->getStatusText();
-$method = $notification->getMethod();
-$cardHolderName = $notification->getCardHolderName();
-$custom1 = $notification->getCustom1();
-$custom2 = $notification->getCustom2();
-
-// Handle different payment statuses
-switch ($statusCode) {
-    case $notification::STATUS_SUCCESS:
-        // Payment successful
-        // TODO: Update your database
-        // TODO: Mark order as paid
-        // TODO: Send confirmation email
-        // TODO: Activate subscription, etc.
-        
-        // Example database update (pseudo-code)
-        // $db->query("UPDATE orders SET status = 'paid', payment_id = ? WHERE order_id = ?", 
-        //            [$paymentId, $orderId]);
-        
-        // Log success
-        file_put_contents(
-            __DIR__ . '/payments.log',
-            date('Y-m-d H:i:s') . " - SUCCESS - Order: $orderId, Payment: $paymentId, Amount: $amount $currency\n",
-            FILE_APPEND
-        );
-        
-        echo "Payment processed successfully";
-        break;
-        
-    case $notification::STATUS_PENDING:
-        // Payment pending
-        // TODO: Mark order as pending
-        
-        file_put_contents(
-            __DIR__ . '/payments.log',
-            date('Y-m-d H:i:s') . " - PENDING - Order: $orderId\n",
-            FILE_APPEND
-        );
-        
-        echo "Payment pending";
-        break;
-        
-    case $notification::STATUS_CANCELED:
-        // Payment canceled
-        // TODO: Mark order as canceled
-        
-        file_put_contents(
-            __DIR__ . '/payments.log',
-            date('Y-m-d H:i:s') . " - CANCELED - Order: $orderId\n",
-            FILE_APPEND
-        );
-        
-        echo "Payment canceled";
-        break;
-        
-    case $notification::STATUS_FAILED:
-        // Payment failed
-        // TODO: Mark order as failed
-        
-        file_put_contents(
-            __DIR__ . '/payments.log',
-            date('Y-m-d H:i:s') . " - FAILED - Order: $orderId\n",
-            FILE_APPEND
-        );
-        
-        echo "Payment failed";
-        break;
-        
-    case $notification::STATUS_CHARGEDBACK:
-        // Payment chargedback
-        // TODO: Handle chargeback
-        
-        file_put_contents(
-            __DIR__ . '/payments.log',
-            date('Y-m-d H:i:s') . " - CHARGEDBACK - Order: $orderId, Payment: $paymentId\n",
-            FILE_APPEND
-        );
-        
-        echo "Payment chargedback";
-        break;
-        
-    default:
-        echo "Unknown payment status";
-}
-
-// Always return 200 OK to PayHere
-http_response_code(200);

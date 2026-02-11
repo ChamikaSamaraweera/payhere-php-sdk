@@ -25,7 +25,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Payhere\\": "src/"
+            "Payhere\\": "src/",
+            "Payhere\\Exceptions\\": "src/Exceptions/"
         }
     }
 }
